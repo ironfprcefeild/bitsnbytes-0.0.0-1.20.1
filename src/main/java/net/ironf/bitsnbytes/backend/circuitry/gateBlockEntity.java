@@ -1,7 +1,6 @@
 package net.ironf.bitsnbytes.backend.circuitry;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
@@ -17,16 +16,12 @@ public class gateBlockEntity extends basicLinkingBlockEntity implements gateSign
         return null;
     }
 
-    public BlockPos posInputA;
-    public BlockPos posInputB;
-    public BlockPos posPushTo;
-
     public int push = 0;
     public int mode = 0;
 
     @Override
     public void onRecompute(){
-        this.push = this.getGateFunction().compute(getPushedValueAt(this.inputs[0]), getPushedValueAt(this.inputs[1]),this.mode);
+        this.push = this.getGateFunction().compute(getPushedValuesAt(this.inputs),this.mode);
         super.onRecompute();
     }
 

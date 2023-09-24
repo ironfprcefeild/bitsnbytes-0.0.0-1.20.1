@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,12 +38,15 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
 
     }
 
-    public int getPushedValueAt(BlockPos at){
-        BlockEntity preGate = this.level.getBlockEntity(at);
-        if (preGate instanceof gateSignalProvider){
-            return ((gateBlockEntity) preGate).getPush();
+    public int[] getPushedValuesAt(BlockPos[] ats){
+        int[] toReturn = new int[ats.length];
+        for (int i = 0; i < getInputCount(); i++) {
+            BlockEntity preGate = this.level.getBlockEntity(ats[i]);
+            if (preGate instanceof gateSignalProvider) {
+                toReturn[i] = ((gateSignalProvider) preGate).getPush();
+            }
         }
-        return 0;
+        return toReturn;
     }
     public Optional<basicLinkingBlockEntity> getLinkerAt(BlockPos at){
         BlockEntity preGate = this.level.getBlockEntity(at);
@@ -58,7 +60,6 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
         return testForValidNetwork(this.getBlockPos());
     }
     public boolean testForValidNetwork(BlockPos testingPos){
-        boolean toReturn = true;
         //Loop through Block Pos in this Level
         for (BlockPos bp : this.outputs){
 

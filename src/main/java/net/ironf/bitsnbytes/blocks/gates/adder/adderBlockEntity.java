@@ -1,6 +1,5 @@
 package net.ironf.bitsnbytes.blocks.gates.adder;
 
-import com.simibubi.create.foundation.block.IBE;
 import net.ironf.bitsnbytes.backend.circuitry.gateBlockEntity;
 import net.ironf.bitsnbytes.backend.circuitry.gateFunction;
 import net.minecraft.core.BlockPos;
