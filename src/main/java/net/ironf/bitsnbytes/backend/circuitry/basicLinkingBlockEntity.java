@@ -23,8 +23,8 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
         }
     }
 
-    public BlockPos[] inputs;
-    public BlockPos[] outputs;
+    public BlockPos[] inputs = {null,null,null};
+    public BlockPos[] outputs = {null,null,null};
 
     public Integer getInputCount(){
         return null;
@@ -79,12 +79,16 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
     @Override
     public void remove() {
         for (BlockPos bp : this.outputs){
-            Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
-            linkAt.ifPresent(linkingBlock -> linkingBlock.terminateConnection(bp));
+            if (bp != null) {
+                Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
+                linkAt.ifPresent(linkingBlock -> linkingBlock.terminateConnection(bp));
+            }
         }
         for (BlockPos bp : this.inputs){
-            Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
-            linkAt.ifPresent(basicLinkingBlockEntity -> basicLinkingBlockEntity.terminateConnection(bp));
+            if (bp != null) {
+                Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
+                linkAt.ifPresent(basicLinkingBlockEntity -> basicLinkingBlockEntity.terminateConnection(bp));
+            }
         }
     }
 
@@ -105,14 +109,17 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        int[] writingHelper;
         for (int i = 0; i < getInputCount(); i++){
-            writingHelper = tag.getIntArray("input" + i);
-            this.inputs[i] = new BlockPos(writingHelper[0],writingHelper[1],writingHelper[2]);
+            int[] writingHelper = tag.getIntArray("input" + i);
+            if (writingHelper.length != 0) {
+                this.inputs[i] = new BlockPos(writingHelper[0], writingHelper[1], writingHelper[2]);
+            }
         }
         for (int i = 0; i < getOutputCount(); i++){
-            writingHelper = tag.getIntArray("output" + i);
-            this.outputs[i] = new BlockPos(writingHelper[0],writingHelper[1],writingHelper[2]);
+            int[] writingHelper = tag.getIntArray("output" + i);
+            if (writingHelper.length != 0) {
+                this.outputs[i] = new BlockPos(writingHelper[0], writingHelper[1], writingHelper[2]);
+            }
         }
     }
 
@@ -120,10 +127,14 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         for (int i = 0; i < getInputCount(); i++){
-            tag.putIntArray("input" + i,new int[]{inputs[i].getX(),inputs[i].getY(),inputs[i].getZ()});
+            if (inputs[i] != null) {
+                tag.putIntArray("input" + i, new int[]{inputs[i].getX(), inputs[i].getY(), inputs[i].getZ()});
+            }
         }
         for (int i = 0; i < getOutputCount(); i++){
-            tag.putIntArray("output" + i,new int[]{outputs[i].getX(),outputs[i].getY(),outputs[i].getZ()});
+            if (inputs[i] != null) {
+                tag.putIntArray("output" + i, new int[]{outputs[i].getX(), outputs[i].getY(), outputs[i].getZ()});
+            }
         }
 
     }

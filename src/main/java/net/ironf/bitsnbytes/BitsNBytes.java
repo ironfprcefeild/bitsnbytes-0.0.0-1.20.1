@@ -30,16 +30,13 @@ public class BitsNBytes
 
     public BitsNBytes()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get()
+                .getModEventBus();
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-
+        REGISTRATE.registerEventListeners(modEventBus);
 
         AllBlockEntities.register();
         AllBlocks.register();
