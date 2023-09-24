@@ -16,9 +16,7 @@ public class AllBlockEntities {
 
     public static final BlockEntityEntry<supplyBlockEntity> SUPPLY = REGISTRATE
             .blockEntity("supply", supplyBlockEntity::new)
-            .instance(() -> supplyCogInstance::new, true)
             .validBlocks(AllBlocks.SUPPLY)
-            .renderer(() -> supplyBlockEntityRenderer::new)
             .register();
 
 

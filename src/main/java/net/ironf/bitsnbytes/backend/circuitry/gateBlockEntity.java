@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
-public class gateBlockEntity extends basicLinkingBlockEntity implements gateSignalProvider {
+public class gateBlockEntity extends basicLinkingBlockEntity {
 
     public gateBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -26,7 +26,7 @@ public class gateBlockEntity extends basicLinkingBlockEntity implements gateSign
     }
 
     @Override
-    public int getPush() {
+    public Integer getPush() {
         return push;
     }
 

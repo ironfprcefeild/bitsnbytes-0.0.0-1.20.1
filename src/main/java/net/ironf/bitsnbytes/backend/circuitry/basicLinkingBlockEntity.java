@@ -38,12 +38,16 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
 
     }
 
+    public Integer getPush(){
+        return null;
+    }
+
     public int[] getPushedValuesAt(BlockPos[] ats){
         int[] toReturn = new int[ats.length];
         for (int i = 0; i < getInputCount(); i++) {
             BlockEntity preGate = this.level.getBlockEntity(ats[i]);
-            if (preGate instanceof gateSignalProvider) {
-                toReturn[i] = ((gateSignalProvider) preGate).getPush();
+            if (preGate instanceof basicLinkingBlockEntity) {
+                toReturn[i] = ((basicLinkingBlockEntity) preGate).getPush();
             }
         }
         return toReturn;
@@ -139,4 +143,6 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
         }
 
     }
+
+
 }
