@@ -18,15 +18,18 @@ public class AllBlocks {
 
     public static final BlockEntry<adderBlock> ADDER = REGISTRATE.block("adder", adderBlock::new)
             .initialProperties(SharedProperties::softMetal)
-            .properties(p -> p.mapColor(MapColor.METAL))
+            .properties(p -> p.mapColor(MapColor.METAL).noOcclusion())
             .simpleItem()
             .register();
 
+
     public static final BlockEntry<supplyBlock> SUPPLY = REGISTRATE.block("supply", supplyBlock::new)
             .initialProperties(SharedProperties::softMetal)
-            .properties(p -> p.mapColor(MapColor.METAL))
+            .properties(p -> p.mapColor(MapColor.METAL).noOcclusion())
             .simpleItem()
             .register();
+
+
 
     public static void register() {}
 }

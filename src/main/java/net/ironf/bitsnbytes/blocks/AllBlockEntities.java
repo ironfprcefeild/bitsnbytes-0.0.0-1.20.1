@@ -2,9 +2,7 @@ package net.ironf.bitsnbytes.blocks;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.bitsnbytes.blocks.gates.adder.adderBlockEntity;
-import net.ironf.bitsnbytes.blocks.gates.supply.supplyBlockEntity;
-import net.ironf.bitsnbytes.blocks.gates.supply.supplyBlockEntityRenderer;
-import net.ironf.bitsnbytes.blocks.gates.supply.supplyCogInstance;
+import net.ironf.bitsnbytes.blocks.gates.supply.*;
 
 import static net.ironf.bitsnbytes.BitsNBytes.REGISTRATE;
 
@@ -15,12 +13,15 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.ADDER)
             .register();
 
+
     public static final BlockEntityEntry<supplyBlockEntity> SUPPLY = REGISTRATE
             .blockEntity("supply", supplyBlockEntity::new)
             .instance(() -> supplyCogInstance::new, true)
             .validBlocks(AllBlocks.SUPPLY)
             .renderer(() -> supplyBlockEntityRenderer::new)
             .register();
+
+
 
     public static void register() {}
 
