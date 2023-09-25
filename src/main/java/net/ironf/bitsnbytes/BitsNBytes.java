@@ -1,10 +1,10 @@
 package net.ironf.bitsnbytes;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.ironf.bitsnbytes.blocks.AllBlockEntities;
 import net.ironf.bitsnbytes.blocks.AllBlocks;
+import net.ironf.bitsnbytes.items.AllItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
