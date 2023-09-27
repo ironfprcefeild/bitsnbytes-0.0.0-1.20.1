@@ -22,4 +22,13 @@ public class supplyBlockEntity extends basicLinkingBlockEntity {
         return 0;
     }
 
+    @Override
+    public Integer getInputCount() {
+        return 0;
+    }
+
+    @Override
+    public Integer getOutputCount() {
+        return 1;
+    }
 }

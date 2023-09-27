@@ -27,4 +27,6 @@ public class supplyBlock extends KineticBlock implements ICogWheel, IBE<supplyBl
     public BlockEntityType<? extends supplyBlockEntity> getBlockEntityType() {
         return AllBlockEntities.SUPPLY.get();
     }
+
+
 }

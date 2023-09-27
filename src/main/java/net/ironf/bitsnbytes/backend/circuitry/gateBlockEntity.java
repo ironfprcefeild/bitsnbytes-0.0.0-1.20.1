@@ -41,9 +41,4 @@ public class gateBlockEntity extends basicLinkingBlockEntity {
     }
 
 
-
-    @Override
-    public @NotNull ModelData getModelData() {
-        return super.getModelData();
-    }
 }

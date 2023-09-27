@@ -1,9 +1,11 @@
 package net.ironf.bitsnbytes.backend.circuitry;
 
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,14 +13,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Optional;
 
-public class basicLinkingBlockEntity extends SmartBlockEntity {
+public class basicLinkingBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public basicLinkingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     public void onRecompute(){
         for (BlockPos bp : outputs){
-            getLinkerAt(bp).ifPresent(basicLinkingBlockEntity::onRecompute);
+            if (bp != null) {
+                getLinkerAt(bp).ifPresent(basicLinkingBlockEntity::onRecompute);
+            }
         }
     }
 
@@ -45,10 +49,12 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
     public int[] getPushedValuesAt(BlockPos[] ats){
         int[] toReturn = new int[ats.length];
         for (int i = 0; i < getInputCount(); i++) {
-            BlockEntity preGate = this.level.getBlockEntity(ats[i]);
-            if (preGate instanceof basicLinkingBlockEntity) {
-                toReturn[i] = ((basicLinkingBlockEntity) preGate).getPush();
+            if (ats[i] == null){
+               toReturn[i] = 0;
+               continue;
             }
+            Optional<basicLinkingBlockEntity> preLinker = getLinkerAt(ats[i]);
+            toReturn[i] = preLinker.isPresent() ? preLinker.get().getPush() : 0;
         }
         return toReturn;
     }
@@ -71,6 +77,9 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
             if (bp == testingPos){
                 return false;
             }
+            if (bp == null){
+                continue;
+            }
             //Get Linked Block Pos
             Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
             //Check Look through the linked blocks outputs
@@ -87,6 +96,7 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
             if (bp != null) {
                 Optional<basicLinkingBlockEntity> linkAt = getLinkerAt(bp);
                 linkAt.ifPresent(linkingBlock -> linkingBlock.terminateConnection(bp));
+                linkAt.ifPresent(basicLinkingBlockEntity::onRecompute);
             }
         }
         for (BlockPos bp : this.inputs){
@@ -97,19 +107,57 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
         }
     }
 
+
     public void terminateConnection(BlockPos toTerminate){
+        this.removeInput(toTerminate);
+        this.removeOutput(toTerminate);
+    }
+    /*
+    Returns an Optional containing the position in the I/O array used in which a block pos was modified. If no connections were unused, then it returns an empty optional
+     */
+    public Optional<Integer> addInput(BlockPos toAdd){
         for (int i = 0; i < getInputCount(); i++){
-            if (this.inputs[i] == toTerminate){
-                this.inputs[i] = null;
+            if (this.inputs[i] == null){
+                this.inputs[i] = toAdd;
+                return Optional.of(i);
             }
         }
+        return Optional.empty();
+    }
+
+    public Optional<Integer> addOutput(BlockPos toAdd){
         for (int i = 0; i < getOutputCount(); i++){
-            if (this.outputs[i] == toTerminate){
+            if (this.outputs[i] == null){
+                this.outputs[i] = toAdd;
+                return Optional.of(i);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void removeInput(BlockPos toRemove){
+        for (int i = 0; i < getInputCount(); i++){
+            if (this.outputs[i] == null){
+                this.outputs[i] = toRemove;
+            }
+        }
+    }
+
+    public void removeOutput(BlockPos toRemove){
+        for (int i = 0; i < getOutputCount(); i++){
+            if (this.outputs[i] == toRemove){
                 this.outputs[i] = null;
             }
         }
     }
 
+
+
+    @Override
+    public void onLoad() {
+        this.onRecompute();
+        super.onLoad();
+    }
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -137,12 +185,17 @@ public class basicLinkingBlockEntity extends SmartBlockEntity {
             }
         }
         for (int i = 0; i < getOutputCount(); i++){
-            if (inputs[i] != null) {
+            if (outputs[i] != null) {
                 tag.putIntArray("output" + i, new int[]{outputs[i].getX(), outputs[i].getY(), outputs[i].getZ()});
             }
         }
 
     }
 
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(Component.literal("Pushing:" + this.getPush().toString()));
+        return IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+    }
 
 }
